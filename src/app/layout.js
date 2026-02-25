@@ -95,6 +95,7 @@ export default function RootLayout({
         {/* Theme Color */}
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="google-site-verification" content="google8409242389fa5575" />
         
         {/* Viewport is automatically added by Next.js */}
       </head>
