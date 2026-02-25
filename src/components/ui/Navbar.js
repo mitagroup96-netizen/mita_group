@@ -1,68 +1,106 @@
 // components/Navbar.jsx
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectCartCount } from '@/store/cartSlice';
-import { FaSearch, FaShoppingCart, FaBars, FaTimes, FaHome, FaBook, FaInfoCircle } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaBars, FaTimes, FaHome, FaBook, FaInfoCircle, FaUser } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import mitaLogo from '../../../public/mitalogo.png';
+import { useMediaQuery } from '@/hooks/useMediaQuery'; // Custom hook for media queries
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const searchInputRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isTablet = useMediaQuery('(max-width: 1024px)');
 
   const cartItemsCount = useSelector(selectCartCount);
 
+  // Optimized scroll handler with RAF
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 40); // slightly later trigger
+          setScrolled(window.scrollY > 40);
           ticking = false;
         });
         ticking = true;
       }
     };
+    
     window.addEventListener('scroll', handleScroll, { passive: true });
     
     // Prevent body scroll when mobile menu is open
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none'; // Prevent touch scrolling
     } else {
       document.body.style.overflow = 'unset';
+      document.body.style.touchAction = 'unset';
     }
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.body.style.overflow = 'unset';
+      document.body.style.touchAction = 'unset';
     };
   }, [isOpen]);
 
-  const handleSearch = (e) => {
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+        setIsSearchExpanded(false);
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, []);
+
+  // Focus search input when expanded
+  useEffect(() => {
+    if (isSearchExpanded && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchExpanded]);
+
+  const handleSearch = useCallback((e) => {
     e.preventDefault();
     const query = searchQuery.trim();
     if (!query) return;
+    
     router.push(`/books?search=${encodeURIComponent(query)}`);
     setSearchQuery('');
     setIsOpen(false);
-  };
+    setIsSearchExpanded(false);
+  }, [searchQuery, router]);
 
-  const navLinks = useMemo(
-    () => [
-      { name: 'Home', href: '/', icon: <FaHome /> },
-      { name: 'Books', href: '/books', icon: <FaBook /> },
-      { name: 'About Us', href: '/about', icon: <FaInfoCircle /> },
-    ],
-    []
-  );
+  const navLinks = useMemo(() => [
+    { name: 'Home', href: '/', icon: <FaHome />, exact: true },
+    { name: 'Books', href: '/books', icon: <FaBook /> },
+    { name: 'About Us', href: '/about', icon: <FaInfoCircle /> },
+  ], []);
+
+  const isActiveLink = useCallback((href, exact = false) => {
+    if (exact) return pathname === href;
+    return pathname.startsWith(href);
+  }, [pathname]);
 
   const navbarVariants = {
     hidden: { y: -100 },
@@ -70,6 +108,20 @@ const Navbar = () => {
       y: 0,
       transition: { type: 'spring', stiffness: 120, damping: 18 },
     },
+  };
+
+  const mobileMenuVariants = {
+    hidden: { x: '100%', opacity: 0 },
+    visible: { 
+      x: 0, 
+      opacity: 1,
+      transition: { type: 'spring', damping: 30, stiffness: 250 }
+    },
+    exit: { 
+      x: '100%', 
+      opacity: 0,
+      transition: { duration: 0.2 }
+    }
   };
 
   return (
@@ -81,52 +133,68 @@ const Navbar = () => {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
-            : 'bg-linear-to-r from-indigo-600 via-purple-600 to-blue-600'
+            : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600'
         }`}
+        role="navigation"
+        aria-label="Main navigation"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm">
-                <Image src={mitaLogo} alt="Mita Logo" width={32} height={32} className="w-[clamp(1.5rem,4vw,2rem)] h-[clamp(1.5rem,4vw,2rem)]" />
+            {/* Logo - Improved touch target */}
+            <Link 
+              href="/" 
+              className="flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-1"
+              aria-label="MitaStore Home"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-transform hover:scale-105">
+                <Image 
+                  src={mitaLogo} 
+                  alt="" 
+                  width={32} 
+                  height={32} 
+                  className="w-[clamp(1.5rem,4vw,2rem)] h-[clamp(1.5rem,4vw,2rem)]"
+                  priority
+                />
               </div>
               <span
-                className={`text-[clamp(1rem,3vw,1.25rem)] font-bold tracking-tight logoFont ${
+                className={`text-[clamp(1rem,3vw,1.25rem)] font-bold tracking-tight ${
                   scrolled ? 'text-gray-900' : 'text-white'
-                } hidden sm:block`}
+                } hidden sm:block transition-colors`}
               >
                 MitaStore
               </span>
             </Link>
 
-            {/* Desktop Nav + Search + Cart */}
-            <div className="hidden md:flex items-center gap-10">
-              {/* Links */}
-              <div className="flex gap-2">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6 lg:gap-10">
+              {/* Navigation Links */}
+              <div className="flex gap-1 lg:gap-2">
                 {navLinks.map((link) => {
-                  const isActive = pathname === link.href;
+                  const isActive = isActiveLink(link.href, link.exact);
                   return (
                     <Link
                       key={link.name}
                       href={link.href}
-                      className={`group relative flex items-center gap-2 px-4 py-2 text-[clamp(0.75rem,1.5vw,0.875rem)] font-medium rounded-lg transition-colors ${
+                      className={`group relative flex items-center gap-2 px-3 lg:px-4 py-2 text-[clamp(0.75rem,1.5vw,0.875rem)] font-medium rounded-lg transition-all ${
                         isActive
                           ? scrolled
                             ? 'text-indigo-600'
                             : 'text-white'
                           : scrolled
-                          ? 'text-gray-700 hover:text-indigo-600'
-                          : 'text-white/90 hover:text-white'
+                          ? 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
+                          : 'text-white/90 hover:text-white hover:bg-white/10'
                       }`}
+                      aria-current={isActive ? 'page' : undefined}
                     >
                       <span className="text-[clamp(0.875rem,1.5vw,1rem)]">{link.icon}</span>
                       <span>{link.name}</span>
                       {isActive && (
-                        <span
+                        <motion.span
+                          layoutId="activeNavIndicator"
                           className={`absolute inset-x-0 -bottom-1 h-0.5 rounded-full ${
                             scrolled ? 'bg-indigo-600' : 'bg-white'
                           }`}
+                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                         />
                       )}
                     </Link>
@@ -134,67 +202,171 @@ const Navbar = () => {
                 })}
               </div>
 
-              {/* Search */}
-              <form onSubmit={handleSearch} className="relative w-[clamp(12rem,25vw,18rem)]">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search books…"
-                  className={`w-full rounded-full border py-[clamp(0.5rem,1.2vw,0.625rem)] pl-11 pr-12 text-[clamp(0.75rem,1.2vw,0.875rem)] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 ${
-                    scrolled
-                      ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
-                      : 'border-white/30 bg-white/15 text-white placeholder-white/60'
-                  }`}
-                />
-                <FaSearch
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 text-[clamp(0.875rem,1.2vw,1rem)] ${
-                    scrolled ? 'text-gray-500' : 'text-white/70'
-                  }`}
-                />
-                <button
-                  type="submit"
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 text-[clamp(1rem,1.5vw,1.125rem)] font-bold ${
-                    scrolled ? 'text-indigo-600 hover:text-indigo-700' : 'text-white hover:text-white/80'
-                  }`}
-                >
-                  →
-                </button>
-              </form>
+              {/* Search - Conditional rendering based on screen size */}
+              {!isTablet && (
+                <form onSubmit={handleSearch} className="relative w-[clamp(12rem,25vw,18rem)]">
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search books..."
+                    className={`w-full rounded-full border py-[clamp(0.5rem,1.2vw,0.625rem)] pl-11 pr-12 text-[clamp(0.75rem,1.2vw,0.875rem)] transition-all focus:outline-none focus:ring-2 ${
+                      scrolled
+                        ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-indigo-500/50'
+                        : 'border-white/30 bg-white/15 text-white placeholder-white/60 focus:ring-white/50'
+                    }`}
+                    aria-label="Search books"
+                  />
+                  <FaSearch
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-[clamp(0.875rem,1.2vw,1rem)] ${
+                      scrolled ? 'text-gray-500' : 'text-white/70'
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="submit"
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 text-[clamp(1rem,1.5vw,1.125rem)] font-bold transition-colors ${
+                      scrolled ? 'text-indigo-600 hover:text-indigo-700' : 'text-white hover:text-white/80'
+                    }`}
+                    aria-label="Submit search"
+                  >
+                    →
+                  </button>
+                </form>
+              )}
 
-              {/* Cart */}
+              {/* Cart with animation */}
               <Link
                 href="/cart"
-                className={`relative flex items-center rounded-full p-3 transition-colors ${
+                className={`relative flex items-center rounded-full p-2 lg:p-3 transition-colors group ${
                   scrolled
                     ? 'text-gray-700 hover:bg-gray-100'
                     : 'text-white hover:bg-white/10'
                 }`}
+                aria-label={`Shopping cart with ${cartItemsCount} items`}
               >
-                <FaShoppingCart className="text-[clamp(1rem,2vw,1.25rem)]" />
-                {cartItemsCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[clamp(0.625rem,1.5vw,0.75rem)] font-bold text-white shadow-md">
-                    {cartItemsCount}
-                  </span>
-                )}
+                <FaShoppingCart className="text-[clamp(1rem,2vw,1.25rem)] transition-transform group-hover:scale-110" />
+                <AnimatePresence>
+                  {cartItemsCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[clamp(0.625rem,1.5vw,0.75rem)] font-bold text-white shadow-md"
+                    >
+                      {cartItemsCount > 99 ? '99+' : cartItemsCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </Link>
             </div>
 
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`rounded-lg p-2.5 md:hidden ${
-                scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
-              }`}
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
+            {/* Mobile: Right side actions */}
+            <div className="flex items-center gap-2 md:hidden">
+              {/* Mobile search toggle */}
+              <button
+                onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+                className={`rounded-lg p-2.5 transition-colors ${
+                  scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                }`}
+                aria-label={isSearchExpanded ? 'Close search' : 'Open search'}
+                aria-expanded={isSearchExpanded}
+              >
+                <FaSearch size={20} />
+              </button>
+
+              {/* Mobile cart */}
+              <Link
+                href="/cart"
+                className={`relative rounded-lg p-2.5 ${
+                  scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                }`}
+                aria-label={`Cart with ${cartItemsCount} items`}
+              >
+                <FaShoppingCart size={20} />
+                {cartItemsCount > 0 && (
+                  <span className="absolute -right-0 -top-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                    {cartItemsCount > 99 ? '99+' : cartItemsCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Hamburger menu */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`rounded-lg p-2.5 transition-colors ${
+                  scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                }`}
+                aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isOpen}
+                aria-controls="mobile-menu"
+              >
+                <AnimatePresence mode="wait">
+                  {isOpen ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90 }}
+                      animate={{ rotate: 0 }}
+                      exit={{ rotate: 90 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <FaTimes size={24} />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="menu"
+                      initial={{ rotate: 90 }}
+                      animate={{ rotate: 0 }}
+                      exit={{ rotate: -90 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <FaBars size={24} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
           </div>
+
+          {/* Mobile search bar - expands below navbar */}
+          <AnimatePresence>
+            {isMobile && isSearchExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden md:hidden"
+              >
+                <form onSubmit={handleSearch} className="py-3 px-1">
+                  <div className="relative">
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search books..."
+                      className="w-full rounded-xl border border-gray-300 bg-white px-12 py-3 text-base focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                      aria-label="Search books"
+                    />
+                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <button
+                      type="submit"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-600 font-bold hover:text-indigo-700"
+                      aria-label="Submit search"
+                    >
+                      Go
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.nav>
 
-      {/* Mobile Menu - Fixed for better mobile experience */}
+      {/* Mobile Menu - Improved accessibility */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -204,100 +376,69 @@ const Navbar = () => {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
             onClick={() => setIsOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
           >
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+              variants={mobileMenuVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               className="fixed right-0 top-0 h-full w-[clamp(16rem,75vw,22rem)] max-w-[90vw] bg-white shadow-2xl overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
+              id="mobile-menu"
             >
               <div className="flex h-full flex-col p-6">
-                {/* Header with close button */}
-                <div className="mb-8 flex items-center justify-between">
-                  <Link
-                    href="/"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3"
-                  >
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600">
-                      <Image src={mitaLogo} alt="Mita Logo" width={28} height={28} className="w-7 h-7" />
-                    </div>
-                    <span className="text-[clamp(1.25rem,5vw,1.5rem)] font-bold text-gray-900">
-                      MitaStore
-                    </span>
-                  </Link>
-                  <button 
-                    onClick={() => setIsOpen(false)}
-                    className="rounded-lg p-2 hover:bg-gray-100 transition-colors"
-                    aria-label="Close menu"
-                  >
-                    <FaTimes size={24} className="text-gray-600" />
-                  </button>
+                {/* Header with user greeting (optional) */}
+                <div className="mb-12 flex items-center justify-between">
+                  
                 </div>
 
-                {/* Search - Improved for mobile */}
-                <form onSubmit={handleSearch} className="mb-8">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search books…"
-                      className="w-full rounded-xl border border-gray-300 bg-gray-50 px-12 py-4 text-[clamp(0.875rem,4vw,1rem)] focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                      autoFocus
-                    />
-                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-[clamp(0.875rem,4vw,1rem)]" />
-                    <button
-                      type="submit"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-600 font-bold text-[clamp(1rem,4vw,1.125rem)] hover:text-indigo-700"
-                    >
-                      Go
-                    </button>
-                  </div>
-                </form>
-
                 {/* Navigation Links - Improved touch targets */}
-                <nav className="flex-1 space-y-2">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center gap-4 rounded-xl px-5 py-4 text-[clamp(1rem,4vw,1.125rem)] font-medium transition-all active:scale-[0.98] ${
-                        pathname === link.href
-                          ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-500'
-                          : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
-                      }`}
-                    >
-                      <span className="text-[clamp(1.125rem,4.5vw,1.25rem)]">{link.icon}</span>
-                      {link.name}
-                    </Link>
-                  ))}
+                <nav className="flex-1 space-y-1" aria-label="Mobile navigation">
+                  {navLinks.map((link) => {
+                    const isActive = isActiveLink(link.href, link.exact);
+                    return (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center gap-4 rounded-xl px-5 py-4 text-base font-medium transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                          isActive
+                            ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-500'
+                            : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
+                        }`}
+                        aria-current={isActive ? 'page' : undefined}
+                      >
+                        <span className="text-xl">{link.icon}</span>
+                        {link.name}
+                      </Link>
+                    );
+                  })}
                 </nav>
 
                 {/* Cart with improved touch target */}
                 <Link
                   href="/cart"
                   onClick={() => setIsOpen(false)}
-                  className="mt-6 flex items-center justify-between rounded-xl bg-gray-100 px-5 py-4 hover:bg-gray-200 active:bg-gray-300 transition-colors"
+                  className="mt-6 flex items-center justify-between rounded-xl bg-gray-100 px-5 py-4 hover:bg-gray-200 active:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <div className="flex items-center gap-4">
-                    <FaShoppingCart className="text-[clamp(1.125rem,4.5vw,1.25rem)] text-gray-700" />
-                    <span className="font-medium text-gray-800 text-[clamp(1rem,4vw,1.125rem)]">Cart</span>
+                    <FaShoppingCart className="text-xl text-gray-700" />
+                    <span className="font-medium text-gray-800">Shopping Cart</span>
                   </div>
                   {cartItemsCount > 0 && (
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-[clamp(0.875rem,3.5vw,1rem)] font-bold text-white shadow-md">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white shadow-md">
                       {cartItemsCount > 99 ? '99+' : cartItemsCount}
                     </span>
                   )}
                 </Link>
 
-                {/* Optional: Add footer with user info/actions */}
+                {/* Footer */}
                 <div className="mt-8 pt-6 border-t border-gray-200">
-                  <p className="text-center text-gray-500 text-[clamp(0.75rem,3vw,0.875rem)]">
-                    © 2024 MitaStore. All rights reserved.
+                  <p className="text-center text-gray-500 text-sm">
+                    © {new Date().getFullYear()} MitaStore. All rights reserved.
                   </p>
                 </div>
               </div>
@@ -306,8 +447,8 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      {/* Spacer - same height as navbar */}
-      <div className="h-16" />
+      {/* Spacer with dynamic height */}
+      <div className="h-16" aria-hidden="true" />
     </>
   );
 };
