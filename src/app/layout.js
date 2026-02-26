@@ -11,11 +11,18 @@ import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = {
   title: {
-    default: "MITA Group - Industry Leader in [Your Industry]",
-    template: "%s | MITA Group"
-  },
-  description: "MITA Group provides comprehensive [industry] solutions including [key services]. We deliver excellence through innovation and expertise.",
-  keywords: ["MITA Group Book Store", "independent bookstore near me", "professional services", "business consulting"],
+  default: "MITA Group Book Store - Buy Academic & Islamic Books Online in Bangladesh",
+  template: "%s | MITA Group"
+},
+description:
+  "MITA Group is a trusted online bookstore in Bangladesh offering academic, competitive exam, fiction, non-fiction and Islamic books at affordable prices.",
+keywords: [
+  "MITA Group",
+  "online book store Bangladesh",
+  "Islamic books Dhaka",
+  "academic books BD",
+  "competitive exam books Bangladesh"
+],
   authors: [{ name: "MITA Group", url: "https://mita-group.vercel.app" }],
   creator: "MITA Group",
   publisher: "MITA Group",

@@ -10,7 +10,6 @@ export default function robots() {
         '/api/', 
         '/private/', 
         '/admin/',
-        '/*?*', // Prevents crawling of URLs with query parameters
       ],
     },
     sitemap: 'https://mita-group.vercel.app/sitemap.xml',
