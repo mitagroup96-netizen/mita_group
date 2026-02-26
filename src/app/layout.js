@@ -17,7 +17,7 @@ export const metadata = {
 description:
   "MITA Group is a trusted online bookstore in Bangladesh offering academic, competitive exam, fiction, non-fiction and Islamic books at affordable prices.",
 keywords: [
-  "MITA Group",
+  "MITA Group Book Store",
   "online book store Bangladesh",
   "Islamic books Dhaka",
   "academic books BD",
