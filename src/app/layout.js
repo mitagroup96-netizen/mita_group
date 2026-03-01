@@ -18,7 +18,7 @@ description:
   "MITA Group is a trusted online bookstore in Bangladesh offering academic, competitive exam, fiction, non-fiction and Islamic books at affordable prices.",
 keywords: [
   "MITA Group Book Store",
-  "online book store Bangladesh",
+  "Niyog Publication",
   "Islamic books Dhaka",
   "academic books BD",
   "competitive exam books Bangladesh"
