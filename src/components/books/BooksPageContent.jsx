@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useBooks } from "@/hooks/useBooks";
 import { useCategories } from "@/hooks/api/categories";
+import Image from "next/image";
 
 const SORT_OPTIONS = [
   { id: "createdAt", label: "নতুন প্রকাশিত", icon: Clock },
@@ -250,8 +251,9 @@ export default function BooksPageContent() {
 
   // SMALLER BOOK CARD COMPONENT - Consistent Height with clamp
   const BookCard = ({ book, viewMode = "grid" }) => {
-    const originalPrice = Number(book.price) || 0;
+    const originalPrice = Number(book.originalPrice) || 0;
     const discount = Number(book.discount) || 0;
+    const price = Number(book.price) || 0;
     const finalPrice = discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
 
     if (viewMode === "list") {
@@ -262,10 +264,11 @@ export default function BooksPageContent() {
             <Link href={`/books/${book._id}`} className="md:w-1/5">
               <div className="relative h-40 md:h-full bg-gradient-to-br from-gray-100 to-gray-200">
                 {book.images?.[0]?.url ? (
-                  <img
+                  <Image
                     src={book.images[0].url}
                     alt={book.title}
-                    className="w-full h-full object-contain p-2"
+                    fill
+                    className="object-cover"
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -344,11 +347,7 @@ export default function BooksPageContent() {
 
             {/* Badges - Smaller */}
             <div className="absolute top-2 left-2 flex flex-col gap-1">
-              {discount > 0 && (
-                <span className="bg-red-500 text-white px-2 py-0.5 rounded text-[clamp(0.625rem,1.5vw,0.75rem)] font-bold">
-                  -{discount}%
-                </span>
-              )}
+              
               {book.bestseller && (
                 <span className="bg-yellow-500 text-white px-2 py-0.5 rounded text-[clamp(0.625rem,1.5vw,0.75rem)] font-bold">
                   বেস্টসেলার
@@ -384,13 +383,13 @@ export default function BooksPageContent() {
           <div className="mt-auto pt-2 border-t border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                {discount > 0 && (
-                  <span className="text-[clamp(0.625rem,1.5vw,0.75rem)] text-gray-500 line-through block">
+                {originalPrice > 0 && (
+                  <span className="text-[clamp(0.625rem,1.5vw,0.75rem)] text-red-300 line-through block">
                     {formatPrice(originalPrice)}
                   </span>
                 )}
-                <span className="text-[clamp(1rem,2.5vw,1.125rem)] font-bold text-blue-600">
-                  {formatPrice(finalPrice)}
+                <span className="text-[clamp(1rem,2.5vw,1.125rem)] font-bold text-green-600">
+                  {formatPrice(price)}
                 </span>
               </div>
 

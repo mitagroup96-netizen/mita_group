@@ -33,6 +33,8 @@ import {
 import { useBook, useRelatedBooks } from "@/hooks/useBooks";
 import { useCategories } from "@/hooks/api/categories";
 import AddToCartButton from "@/components/ui/AddToCartButton";
+import BookReviews from "@/components/books/BookReviews";
+import BookImageGallery from "@/components/books/BookImageGallery";
 
 export default function BookDetailsPage({ params }) {
   const router = useRouter();
@@ -65,8 +67,9 @@ export default function BookDetailsPage({ params }) {
   };
 
   // Calculate discounted price
-  const originalPrice = Number(book?.price) || 0;
+  const originalPrice = Number(book?.originalPrice) || 0;
   const discount = Number(book?.discount) || 0;
+  const price = Number(book?.price) || 0;
   const finalPrice =
     discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
   const savings = originalPrice - finalPrice;
@@ -164,43 +167,15 @@ export default function BookDetailsPage({ params }) {
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Images Section */}
-                <div>
+                <div className="flex flex-col gap-[clamp(1rem,5vw,1.5rem)]">
                   {/* Main Image */}
-                  <div className="relative aspect-3/4 rounded-xl overflow-hidden bg-linear-to-br from-blue-50 to-purple-50 mb-4">
-                    {book.images?.[selectedImage]?.url ? (
-                      <Image
-                        src={book.images[selectedImage].url}
-                        alt={book.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        priority
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen className="w-[clamp(3rem,8vw,5rem)] h-[clamp(3rem,8vw,5rem)] text-gray-400" />
-                      </div>
-                    )}
-
-                    {/* Badges */}
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      {discount > 0 && (
-                        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-[clamp(0.75rem,2vw,0.875rem)] font-bold">
-                          -{discount}%
-                        </span>
-                      )}
-                      {book.bestseller && (
-                        <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-[clamp(0.75rem,2vw,0.875rem)] font-bold">
-                          বেস্টসেলার
-                        </span>
-                      )}
-                      {book.featured && (
-                        <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-[clamp(0.75rem,2vw,0.875rem)] font-bold">
-                          ফিচার্ড
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                  <BookImageGallery
+                    book={book}
+                    discount={book.discount}
+                    showThumbnails={false}
+                    aspectRatio="3/4"
+                    badgePosition="top-4 left-4"
+                  />
 
                   {/* Thumbnails */}
                   {book.images && book.images.length > 1 && (
@@ -299,15 +274,12 @@ export default function BookDetailsPage({ params }) {
                         <span className="text-[clamp(1.25rem,4vw,1.5rem)] text-gray-500 line-through">
                           {formatPrice(originalPrice)}
                         </span>
-                        <span className="ml-3 bg-red-100 text-red-700 px-3 py-1 rounded-full text-[clamp(0.75rem,2vw,0.875rem)] font-medium">
-                          {discount}% ছাড়
-                        </span>
                       </div>
                     )}
 
                     <div className="flex items-baseline mb-2 flex-wrap gap-2">
                       <span className="text-[clamp(2rem,6vw,2.5rem)] font-bold text-blue-600">
-                        {formatPrice(finalPrice)}
+                        {formatPrice(price)}
                       </span>
                       {discount > 0 && (
                         <span className="text-green-600 font-medium text-[clamp(0.875rem,2.5vw,1rem)]">
@@ -332,7 +304,7 @@ export default function BookDetailsPage({ params }) {
                       <AddToCartButton
                         book={{
                           ...book,
-                          price: finalPrice,
+                          price: price,
                         }}
                       />
                     </div>
@@ -439,6 +411,9 @@ export default function BookDetailsPage({ params }) {
                 )}
               </div>
             </div>
+          <div className="mt-[clamp(2rem,5vw,3rem)]">
+            <BookReviews bookId={id} />
+          </div>
           </div>
 
           {/* Right Column - Sidebar */}

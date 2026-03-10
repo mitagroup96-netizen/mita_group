@@ -73,11 +73,6 @@ const BookCard = ({ book }) => {
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-            {discount > 0 && (
-              <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-md font-bangla">
-                -{formatBanglaNumber(discount)}%
-              </span>
-            )}
             {book.bestseller && (
               <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-md flex items-center font-bangla">
                 <TrendingUp className="w-3.5 h-3.5 mr-1.5" /> বেস্টসেলার

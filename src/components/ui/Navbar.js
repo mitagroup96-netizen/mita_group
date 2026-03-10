@@ -161,7 +161,7 @@ const Navbar = () => {
                   scrolled ? 'text-gray-900' : 'text-white'
                 } hidden sm:block transition-colors`}
               >
-                MitaStore
+                নিয়োগ পাবলিকেশন্স
               </span>
             </Link>
 

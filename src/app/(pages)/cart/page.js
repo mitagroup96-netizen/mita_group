@@ -9,7 +9,7 @@ import {
   decreaseQty, 
   clearCart 
 } from "@/store/cartSlice";
-import { FaShoppingCart, FaTrash, FaPlus, FaMinus, FaWhatsapp, FaUser, FaPhone, FaMapMarkerAlt, FaCreditCard, FaTimes } from "react-icons/fa";
+import { FaShoppingCart, FaTrash, FaPlus, FaMinus, FaWhatsapp, FaUser, FaMapMarkerAlt, FaCreditCard, FaTimes } from "react-icons/fa";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const CartPage = () => {
   // Your WhatsApp number
   const whatsappNumber = "8801779527744";
 
-  // ✅ MOVE FORMAT PRICE FUNCTION TO TOP
+  // Format price function
   const formatPrice = (price) => {
     return new Intl.NumberFormat("bn-BD").format(price);
   };
@@ -59,21 +59,21 @@ const CartPage = () => {
     const newErrors = {};
     
     if (!customerDetails.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = "নাম অবশ্যই দিতে হবে";
     }
     
     if (!customerDetails.phone.trim()) {
-      newErrors.phone = "Phone number is required";
+      newErrors.phone = "ফোন নম্বর অবশ্যই দিতে হবে";
     } else if (!/^(?:\+88|88)?01[3-9]\d{8}$/.test(customerDetails.phone)) {
-      newErrors.phone = "Please enter a valid Bangladeshi phone number";
+      newErrors.phone = "সঠিক বাংলাদেশী ফোন নম্বর দিন";
     }
     
     if (!customerDetails.address.trim()) {
-      newErrors.address = "Address is required";
+      newErrors.address = "ঠিকানা অবশ্যই দিতে হবে";
     }
     
     if (!customerDetails.district) {
-      newErrors.district = "Please select a district";
+      newErrors.district = "জেলা নির্বাচন করুন";
     }
     
     setErrors(newErrors);
@@ -99,52 +99,49 @@ const CartPage = () => {
 
   // Generate WhatsApp message with customer details
   const generateWhatsAppMessage = () => {
-    let message = `📚 *Book Order Request* 📚\n\n`;
+    let message = `📚 *বই অর্ডারের অনুরোধ* 📚\n\n`;
     
     // Customer Information
-    message += `*📋 Customer Information:*\n`;
+    message += `*📋 গ্রাহকের তথ্য:*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n`;
-    message += `👤 Name: ${customerDetails.name}\n`;
-    message += `📞 Phone: ${customerDetails.phone}\n`;
-    message += `📍 District: ${customerDetails.district}\n`;
-    message += `🏠 Address: ${customerDetails.address}\n`;
-    message += `💳 Payment: ${customerDetails.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Bkash/Nagad'}\n\n`;
+    message += `👤 নাম: ${customerDetails.name}\n`;
+    message += `📞 ফোন: ${customerDetails.phone}\n`;
+    message += `📍 জেলা: ${customerDetails.district}\n`;
+    message += `🏠 ঠিকানা: ${customerDetails.address}\n`;
+    message += `💳 পেমেন্ট: ${customerDetails.paymentMethod === 'cod' ? 'ক্যাশ অন ডেলিভারি' : 'বিকাশ/নগদ'}\n\n`;
     
     // Order Summary
-    message += `*🛒 Order Summary:*\n`;
+    message += `*🛒 অর্ডারের বিবরণ:*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n`;
     
     cartItems.forEach((item, index) => {
       message += `${index + 1}. *${item.title}*\n`;
-      message += `   ✍️ Author: ${item.author || "Unknown"}\n`;
-      // ✅ Now formatPrice is accessible here
-      message += `   💰 Price: ৳${formatPrice(item.price)} x ${item.quantity} = ৳${formatPrice(item.price * item.quantity)}\n`;
+      message += `   ✍️ লেখক: ${item.author || "অজানা"}\n`;
+      message += `   💰 মূল্য: ৳${formatPrice(item.price)} x ${item.quantity} = ৳${formatPrice(item.price * item.quantity)}\n`;
       if (index < cartItems.length - 1) message += `   ────────────────\n`;
     });
     
     // Order Total
-    message += `\n*💰 Order Total:*\n`;
+    message += `\n*💰 মোট মূল্য:*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n`;
-    message += `📚 Total Items: ${totalItems}\n`;
-    // ✅ Now formatPrice is accessible here
-    message += `💵 Subtotal: ৳${formatPrice(totalPrice)}\n`;
-    message += `🚚 Shipping: ${totalPrice >= 500 ? 'FREE' : '৳50'}\n`;
-    // ✅ Now formatPrice is accessible here
-    message += `💎 Grand Total: ৳${formatPrice(totalPrice >= 500 ? totalPrice : totalPrice + 50)}\n\n`;
+    message += `📚 মোট আইটেম: ${totalItems}\n`;
+    message += `💵 সাবটোটাল: ৳${formatPrice(totalPrice)}\n`;
+    message += `🚚 ডেলিভারি চার্জ: ${totalPrice >= 500 ? 'বিনামূল্যে' : '৳৫০'}\n`;
+    message += `💎 সর্বমোট: ৳${formatPrice(totalPrice >= 500 ? totalPrice : totalPrice + 50)}\n\n`;
     
     // Additional Notes
     if (customerDetails.additionalNotes) {
-      message += `*📝 Customer Notes:*\n`;
+      message += `*📝 বিশেষ নির্দেশনা:*\n`;
       message += `━━━━━━━━━━━━━━━━━━━━\n`;
       message += `${customerDetails.additionalNotes}\n\n`;
     }
     
     // Footer
-    message += `*📦 Delivery Information:*\n`;
-    message += `• 2-3 business days in Dhaka\n`;
-    message += `• 4-7 days outside Dhaka\n`;
-    message += `• Contact: +880 1906-884840\n\n`;
-    message += `✅ Please confirm this order. Thank you!`;
+    message += `*📦 ডেলিভারি তথ্য:*\n`;
+    message += `• ঢাকার মধ্যে ২-৩ কার্যদিবস\n`;
+    message += `• ঢাকার বাইরে ৪-৭ কার্যদিবস\n`;
+    message += `• যোগাযোগ: +৮৮০ ১৯০৬-৮৮৪৮৪০\n\n`;
+    message += `✅ অর্ডারটি নিশ্চিত করুন। ধন্যবাদ!`;
     
     return encodeURIComponent(message);
   };
@@ -186,11 +183,6 @@ const CartPage = () => {
     setShowCustomerForm(true);
   };
 
-  // ✅ REMOVE THE DUPLICATE formatPrice FUNCTION FROM HERE
-  // const formatPrice = (price) => {
-  //   return new Intl.NumberFormat("bn-BD").format(price);
-  // };
-
   // Handle quantity increase
   const handleIncrease = (id) => {
     dispatch(increaseQty(id));
@@ -208,7 +200,7 @@ const CartPage = () => {
 
   // Handle clear cart
   const handleClearCart = () => {
-    if (confirm("Are you sure you want to clear your cart?")) {
+    if (confirm("আপনি কি আপনার কার্ট খালি করতে চান?")) {
       dispatch(clearCart());
     }
   };
@@ -227,8 +219,8 @@ const CartPage = () => {
                     <FaWhatsapp className="w-[clamp(1.25rem,4vw,1.5rem)] h-[clamp(1.25rem,4vw,1.5rem)] text-green-600" />
                   </div>
                   <div>
-                    <h2 className="text-[clamp(1.25rem,5vw,1.5rem)] font-bold text-gray-800">Complete Your Order</h2>
-                    <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">Fill in your details to proceed to WhatsApp</p>
+                    <h2 className="text-[clamp(1.25rem,5vw,1.5rem)] font-bold text-gray-800">আপনার অর্ডার সম্পন্ন করুন</h2>
+                    <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">হোয়াটসঅ্যাপে যেতে আপনার তথ্য দিন</p>
                   </div>
                 </div>
                 <button
@@ -243,13 +235,13 @@ const CartPage = () => {
               <div className="bg-blue-50 p-4 rounded-lg">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div>
-                    <p className="font-medium text-gray-800 text-[clamp(0.875rem,2.5vw,1rem)]">Order Summary</p>
-                    <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">{totalItems} items • ৳{formatPrice(totalPrice)}</p>
+                    <p className="font-medium text-gray-800 text-[clamp(0.875rem,2.5vw,1rem)]">অর্ডারের সারাংশ</p>
+                    <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">{totalItems}টি আইটেম • ৳{formatPrice(totalPrice)}</p>
                   </div>
                   <div className="text-left sm:text-right">
-                    <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">Shipping: {totalPrice >= 500 ? 'FREE' : '৳50'}</p>
+                    <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">ডেলিভারি: {totalPrice >= 500 ? 'বিনামূল্যে' : '৳৫০'}</p>
                     <p className="font-bold text-[clamp(1rem,3vw,1.25rem)] text-blue-600">
-                      Total: ৳{formatPrice(totalPrice >= 500 ? totalPrice : totalPrice + 50)}
+                      সর্বমোট: ৳{formatPrice(totalPrice >= 500 ? totalPrice : totalPrice + 50)}
                     </p>
                   </div>
                 </div>
@@ -263,13 +255,13 @@ const CartPage = () => {
                 <div>
                   <h3 className="text-[clamp(1rem,3vw,1.125rem)] font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <FaUser className="w-5 h-5 text-blue-600" />
-                    Personal Information
+                    ব্যক্তিগত তথ্য
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Name */}
                     <div>
                       <label className="block text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-gray-700 mb-2">
-                        Full Name *
+                        আপনার নাম *
                       </label>
                       <input
                         type="text"
@@ -277,7 +269,7 @@ const CartPage = () => {
                         value={customerDetails.name}
                         onChange={handleInputChange}
                         className={`w-full px-4 py-3 rounded-lg border ${errors.name ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[clamp(0.875rem,2.5vw,1rem)]`}
-                        placeholder="Enter your full name"
+                        placeholder="আপনার পুরো নাম লিখুন"
                       />
                       {errors.name && (
                         <p className="mt-1 text-[clamp(0.75rem,2vw,0.875rem)] text-red-600">{errors.name}</p>
@@ -287,17 +279,17 @@ const CartPage = () => {
                     {/* Phone */}
                     <div>
                       <label className="block text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-gray-700 mb-2">
-                        Phone Number *
+                        ফোন নম্বর *
                       </label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-[clamp(0.875rem,2.5vw,1rem)]">+88</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-[clamp(0.875rem,2.5vw,1rem)]">+৮৮</span>
                         <input
                           type="tel"
                           name="phone"
                           value={customerDetails.phone}
                           onChange={handleInputChange}
                           className={`w-full pl-12 pr-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[clamp(0.875rem,2.5vw,1rem)]`}
-                          placeholder="01XXXXXXXXX"
+                          placeholder="০১XXXXXXXXX"
                         />
                       </div>
                       {errors.phone && (
@@ -311,13 +303,13 @@ const CartPage = () => {
                 <div>
                   <h3 className="text-[clamp(1rem,3vw,1.125rem)] font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <FaMapMarkerAlt className="w-5 h-5 text-green-600" />
-                    Delivery Address
+                    ডেলিভারি ঠিকানা
                   </h3>
                   <div className="space-y-4">
                     {/* District */}
                     <div>
                       <label className="block text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-gray-700 mb-2">
-                        District *
+                        জেলা *
                       </label>
                       <select
                         name="district"
@@ -325,7 +317,7 @@ const CartPage = () => {
                         onChange={handleInputChange}
                         className={`w-full px-4 py-3 rounded-lg border ${errors.district ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[clamp(0.875rem,2.5vw,1rem)]`}
                       >
-                        <option value="">Select District</option>
+                        <option value="">জেলা নির্বাচন করুন</option>
                         {districts.map(district => (
                           <option key={district} value={district}>
                             {district}
@@ -340,7 +332,7 @@ const CartPage = () => {
                     {/* Address Details */}
                     <div>
                       <label className="block text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-gray-700 mb-2">
-                        Full Address *
+                        সম্পূর্ণ ঠিকানা *
                       </label>
                       <textarea
                         name="address"
@@ -348,7 +340,7 @@ const CartPage = () => {
                         onChange={handleInputChange}
                         rows="3"
                         className={`w-full px-4 py-3 rounded-lg border ${errors.address ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[clamp(0.875rem,2.5vw,1rem)]`}
-                        placeholder="House/Road, Area, Thana"
+                        placeholder="বাসা/রাস্তা, এলাকা, থানা"
                       />
                       {errors.address && (
                         <p className="mt-1 text-[clamp(0.75rem,2vw,0.875rem)] text-red-600">{errors.address}</p>
@@ -361,7 +353,7 @@ const CartPage = () => {
                 <div>
                   <h3 className="text-[clamp(1rem,3vw,1.125rem)] font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <FaCreditCard className="w-5 h-5 text-purple-600" />
-                    Payment Method
+                    পেমেন্ট পদ্ধতি
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all ${customerDetails.paymentMethod === 'cod' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
@@ -380,8 +372,8 @@ const CartPage = () => {
                           )}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-800 text-[clamp(0.875rem,2.5vw,1rem)]">Cash on Delivery</p>
-                          <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">Pay when you receive</p>
+                          <p className="font-medium text-gray-800 text-[clamp(0.875rem,2.5vw,1rem)]">ক্যাশ অন ডেলিভারি</p>
+                          <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">পণ্য হাতে পেয়ে পেমেন্ট দিন</p>
                         </div>
                       </div>
                     </label>
@@ -402,8 +394,8 @@ const CartPage = () => {
                           )}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-800 text-[clamp(0.875rem,2.5vw,1rem)]">Mobile Banking</p>
-                          <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">Bkash/Nagad/Rocket</p>
+                          <p className="font-medium text-gray-800 text-[clamp(0.875rem,2.5vw,1rem)]">মোবাইল ব্যাংকিং</p>
+                          <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">বিকাশ/নগদ/রকেট</p>
                         </div>
                       </div>
                     </label>
@@ -413,7 +405,7 @@ const CartPage = () => {
                 {/* Additional Notes */}
                 <div>
                   <label className="block text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-gray-700 mb-2">
-                    Additional Notes (Optional)
+                    অতিরিক্ত তথ্য (ঐচ্ছিক)
                   </label>
                   <textarea
                     name="additionalNotes"
@@ -421,7 +413,7 @@ const CartPage = () => {
                     onChange={handleInputChange}
                     rows="2"
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[clamp(0.875rem,2.5vw,1rem)]"
-                    placeholder="Any special instructions for delivery..."
+                    placeholder="ডেলিভারির জন্য কোনো বিশেষ নির্দেশনা..."
                   />
                 </div>
               </div>
@@ -433,7 +425,7 @@ const CartPage = () => {
                   onClick={() => setShowCustomerForm(false)}
                   className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors text-[clamp(0.875rem,2.5vw,1rem)]"
                 >
-                  Cancel
+                  বাতিল
                 </button>
                 <button
                   type="submit"
@@ -443,19 +435,19 @@ const CartPage = () => {
                   {isProcessing ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Processing...
+                      প্রসেসিং...
                     </>
                   ) : (
                     <>
                       <FaWhatsapp className="w-5 h-5 shrink-0" />
-                      Proceed to WhatsApp
+                      হোয়াটসঅ্যাপে যান
                     </>
                   )}
                 </button>
               </div>
               
               <p className="mt-4 text-center text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">
-                You'll be redirected to WhatsApp to confirm your order
+                অর্ডার নিশ্চিত করতে হোয়াটসঅ্যাপে রিডিরেক্ট করা হবে
               </p>
             </form>
           </div>
@@ -472,7 +464,7 @@ const CartPage = () => {
                 <div className="p-3 bg-blue-600 text-white rounded-full">
                   <FaShoppingCart className="w-[clamp(1.25rem,3vw,1.5rem)] h-[clamp(1.25rem,3vw,1.5rem)]" />
                 </div>
-                <span>Your Shopping Cart</span>
+                <span>আপনার শপিং কার্ট</span>
               </h1>
               
               {cartItems.length > 0 && (
@@ -481,7 +473,7 @@ const CartPage = () => {
                   className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-medium transition-colors flex items-center gap-2 text-[clamp(0.875rem,2.5vw,1rem)]"
                 >
                   <FaTrash className="w-4 h-4" />
-                  Clear Cart
+                  কার্ট খালি করুন
                 </button>
               )}
             </div>
@@ -490,12 +482,12 @@ const CartPage = () => {
               <div className="bg-linear-to-r from-blue-500 to-purple-600 text-white p-4 rounded-xl shadow-lg">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                   <div>
-                    <p className="text-[clamp(1rem,3vw,1.125rem)] font-semibold">Order Summary</p>
-                    <p className="text-blue-100 text-[clamp(0.75rem,2vw,0.875rem)]">Complete your purchase via WhatsApp</p>
+                    <p className="text-[clamp(1rem,3vw,1.125rem)] font-semibold">অর্ডারের সারাংশ</p>
+                    <p className="text-blue-100 text-[clamp(0.75rem,2vw,0.875rem)]">হোয়াটসঅ্যাপের মাধ্যমে আপনার ক্রয় সম্পন্ন করুন</p>
                   </div>
                   <div className="text-left sm:text-right">
                     <p className="text-[clamp(1.5rem,4vw,2rem)] font-bold">৳ {formatPrice(totalPrice)}</p>
-                    <p className="text-blue-100 text-[clamp(0.75rem,2vw,0.875rem)]">{totalItems} items</p>
+                    <p className="text-blue-100 text-[clamp(0.75rem,2vw,0.875rem)]">{totalItems}টি আইটেম</p>
                   </div>
                 </div>
               </div>
@@ -506,16 +498,16 @@ const CartPage = () => {
           {cartItems.length === 0 ? (
             <div className="text-center py-12 sm:py-20 bg-white rounded-2xl shadow-lg px-4">
               <div className="text-6xl sm:text-8xl mb-6">📚</div>
-              <h2 className="text-[clamp(1.25rem,5vw,1.5rem)] font-bold text-gray-800 mb-3">Your cart is empty</h2>
+              <h2 className="text-[clamp(1.25rem,5vw,1.5rem)] font-bold text-gray-800 mb-3">আপনার কার্ট খালি</h2>
               <p className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)] mb-8 max-w-md mx-auto">
-                Looks like you haven't added any books to your cart yet. Start exploring our collection!
+                দেখে নিচ্ছে আপনি এখনও কোনো বই যোগ করেননি। আমাদের কালেকশন দেখুন!
               </p>
               <a 
                 href="/books" 
                 className="inline-flex items-center gap-3 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-[clamp(0.875rem,2.5vw,1.125rem)] shadow-lg hover:shadow-xl transition-all"
               >
                 <FaShoppingCart className="w-[clamp(1rem,2.5vw,1.25rem)] h-[clamp(1rem,2.5vw,1.25rem)]" />
-                Browse Books Collection
+                বইয়ের কালেকশন দেখুন
               </a>
             </div>
           ) : (
@@ -545,10 +537,10 @@ const CartPage = () => {
                         
                         <div className="flex-1 min-w-0">
                           <h2 className="font-bold text-[clamp(1rem,3vw,1.25rem)] text-gray-800 truncate">{item.title}</h2>
-                          <p className="text-gray-600 mb-2 text-[clamp(0.75rem,2vw,0.875rem)]">by {item.author || "Unknown Author"}</p>
+                          <p className="text-gray-600 mb-2 text-[clamp(0.75rem,2vw,0.875rem)]">লেখক: {item.author || "অজানা"}</p>
                           <p className="text-blue-600 font-bold text-[clamp(1rem,2.5vw,1.25rem)]">৳ {formatPrice(item.price)}</p>
                           <p className="text-green-600 font-medium text-[clamp(0.75rem,2vw,0.875rem)]">
-                            Subtotal: ৳ {formatPrice(item.price * item.quantity)}
+                            মোট: ৳ {formatPrice(item.price * item.quantity)}
                           </p>
                         </div>
                       </div>
@@ -581,7 +573,7 @@ const CartPage = () => {
                           <button
                             onClick={() => handleRemove(item.id)}
                             className="p-3 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors"
-                            title="Remove from cart"
+                            title="কার্ট থেকে সরান"
                           >
                             <FaTrash className="w-[clamp(1rem,2.5vw,1.25rem)] h-[clamp(1rem,2.5vw,1.25rem)]" />
                           </button>
@@ -595,27 +587,27 @@ const CartPage = () => {
                 <div className="bg-linear-to-r from-gray-50 to-blue-50 p-4 sm:p-8 border-t border-gray-200">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                      <h3 className="text-[clamp(1rem,3vw,1.25rem)] font-bold text-gray-800 mb-4">Order Details</h3>
+                      <h3 className="text-[clamp(1rem,3vw,1.25rem)] font-bold text-gray-800 mb-4">অর্ডারের বিবরণ</h3>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">Total Items</span>
-                          <span className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">{cartItems.length} different books</span>
+                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">মোট আইটেম</span>
+                          <span className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">{cartItems.length}টি ভিন্ন বই</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">Total Quantity</span>
-                          <span className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">{totalItems} copies</span>
+                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">মোট সংখ্যা</span>
+                          <span className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">{totalItems}টি কপি</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">Items Subtotal</span>
+                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">আইটেমের মূল্য</span>
                           <span className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">৳ {formatPrice(totalPrice)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">Shipping</span>
-                          <span className="font-medium text-green-600 text-[clamp(0.875rem,2.5vw,1rem)]">Free (৳500+ order)</span>
+                          <span className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">ডেলিভারি চার্জ</span>
+                          <span className="font-medium text-green-600 text-[clamp(0.875rem,2.5vw,1rem)]">বিনামূল্যে (৫০০+ টাকার অর্ডারে)</span>
                         </div>
                         <div className="border-t border-gray-300 pt-3 mt-3">
                           <div className="flex justify-between text-lg">
-                            <span className="font-bold text-gray-800 text-[clamp(1rem,3vw,1.125rem)]">Total Amount</span>
+                            <span className="font-bold text-gray-800 text-[clamp(1rem,3vw,1.125rem)]">সর্বমোট</span>
                             <span className="font-bold text-blue-600 text-[clamp(1.25rem,4vw,1.5rem)]">৳ {formatPrice(totalPrice)}</span>
                           </div>
                         </div>
@@ -624,12 +616,12 @@ const CartPage = () => {
                     
                     <div className="flex flex-col justify-between">
                       <div>
-                        <h3 className="text-[clamp(1rem,3vw,1.25rem)] font-bold text-gray-800 mb-4">Delivery Information</h3>
+                        <h3 className="text-[clamp(1rem,3vw,1.25rem)] font-bold text-gray-800 mb-4">ডেলিভারি তথ্য</h3>
                         <div className="space-y-3 text-gray-600">
-                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">📦 Free delivery on orders above ৳500</p>
-                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">⏱️ 2-3 business days in Dhaka</p>
-                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">📞 Contact: +880 1906-884840</p>
-                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">💳 Cash on Delivery available</p>
+                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">📦 ৫০০ টাকার বেশি অর্ডারে বিনামূল্যে ডেলিভারি</p>
+                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">⏱️ ঢাকার মধ্যে ২-৩ কার্যদিবস</p>
+                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">📞 যোগাযোগ: +৮৮০ ১৯০৬-৮৮৪৮৪০</p>
+                          <p className="text-[clamp(0.875rem,2.5vw,1rem)]">💳 ক্যাশ অন ডেলিভারি সুবিধা</p>
                         </div>
                       </div>
                     </div>
@@ -645,7 +637,7 @@ const CartPage = () => {
                   className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-linear-to-r from-green-500 to-green-600 text-white rounded-xl font-bold text-[clamp(1rem,3vw,1.125rem)] shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <FaWhatsapp className="w-[clamp(1.25rem,3vw,1.5rem)] h-[clamp(1.25rem,3vw,1.5rem)] shrink-0" />
-                  Proceed to Checkout via WhatsApp
+                  হোয়াটসঅ্যাপের মাধ্যমে চেকআউট করুন
                 </button>
               </div>
             </>

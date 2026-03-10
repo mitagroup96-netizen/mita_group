@@ -1,5 +1,3 @@
-// app/layout.tsx
-import  { Metadata } from "next";
 import "./globals.css";
 import Footer from "@/components/ui/Footer";
 import Navbar from "@/components/ui/Navbar";
@@ -11,130 +9,116 @@ import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = {
   title: {
-  default: "MITA Group Book Store - Buy Academic & Islamic Books Online in Bangladesh",
-  template: "%s | MITA Group"
-},
-description:
-  "MITA Group is a trusted online bookstore in Bangladesh offering academic, competitive exam, fiction, non-fiction and Islamic books at affordable prices.",
-keywords: [
-  "MITA Group Book Store",
-  "Niyog Publication",
-  "Islamic books Dhaka",
-  "academic books BD",
-  "competitive exam books Bangladesh"
-],
-  authors: [{ name: "MITA Group", url: "https://mita-group.vercel.app" }],
-  creator: "MITA Group",
-  publisher: "MITA Group",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
+
+    default:
+      "Niyog Publications Book Store - Buy Academic & Islamic Books Online in Bangladesh",
+    template: "%s | Niyog Publications",
   },
-  metadataBase: new URL("https://mita-group.vercel.app"),
+
+  description:
+    "Niyog Publications is a trusted online bookstore in Bangladesh offering academic, competitive exam, fiction, non-fiction, and Islamic books at affordable prices.",
+
+  keywords: [
+    "Niyog Publications",
+    "Niyog Publications books",
+    "online book store Bangladesh",
+    "Islamic books Bangladesh",
+    "academic books BD",
+    "competitive exam books Bangladesh",
+    "buy books online Bangladesh",
+  ],
+
+  authors: [{ name: "Niyog Publications", url: "https://niyog-publications.vercel.app" }],
+  creator: "Niyog Publications",
+  publisher: "Niyog Publications",
+
+  metadataBase: new URL("https://niyog-publications.vercel.app"),
+
   alternates: {
     canonical: "/",
-    languages: {
-      'en-US': '/en-us',
-    },
   },
+
   openGraph: {
-    title: "MITA Group - Excellence in [Industry]",
-    description: "Discover how MITA Group delivers exceptional [industry] solutions tailored to your needs.",
-    url: "https://mita-group.vercel.app",
-    siteName: "MITA Group",
+    title: "Niyog Publications - Online Book Store in Bangladesh",
+    description:
+      "Buy academic, Islamic, and competitive exam books online from Niyog Publications in Bangladesh.",
+    url: "https://niyog-publications.vercel.app",
+    siteName: "Niyog Publications",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "MITA Group - Industry Leaders",
+        alt: "Niyog Publications Book Store",
       },
     ],
     locale: "en_US",
     type: "website",
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "MITA Group - Industry Leaders",
-    description: "Discover how MITA Group delivers exceptional solutions tailored to your needs.",
+    title: "Niyog Publications - Online Book Store",
+    description:
+      "Explore academic, Islamic, and exam preparation books from Niyog Publications.",
     images: ["/twitter-image.jpg"],
-    creator: "@mitagroup",
-    site: "@mitagroup",
   },
+
   robots: {
     index: true,
     follow: true,
-    nocache: false,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
+
   verification: {
     google: "google8409242389fa5575",
-    yandex: "your-yandex-verification-code",
-    yahoo: "your-yahoo-verification-code",
   },
-  category: "business",
+
+  category: "books",
 };
 
-export default function RootLayout({ 
-  children 
-}) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Preconnect to important domains */}
+        {/* Preconnect */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* Favicon and App Icons */}
+
+        {/* Favicon */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
-        
-        {/* Theme Color */}
+
+        {/* Theme */}
         <meta name="theme-color" content="#000000" />
-        <meta name="msapplication-TileColor" content="#000000" />
+
+        {/* Google Verification */}
         <meta name="google-site-verification" content="google8409242389fa5575" />
-        
-        {/* Viewport is automatically added by Next.js */}
       </head>
+
       <body>
-        {/* Structured Data - Server Component */}
         <JsonLd />
-        
-        {/* Client Providers Wrapper */}
+
         <Providers>
-          {/* Navigation - Can be server component */}
           <Navbar />
-          
-          {/* Main Content with Loading State */}
+
           <Suspense fallback={<LoadingScreen />}>
             <main>{children}</main>
           </Suspense>
-          
-          {/* Footer - Can be server component */}
+
           <Footer />
         </Providers>
 
-        {/* Optional: Analytics Scripts that don't block rendering */}
+        {/* Google Analytics */}
         <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX`}
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
           strategy="afterInteractive"
         />
+
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXXXX');
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-XXXXXXXXXX');
           `}
         </Script>
       </body>

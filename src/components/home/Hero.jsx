@@ -64,25 +64,6 @@ export const Hero = () => {
           <p className="text-gray-600 max-w-lg mx-auto md:mx-0 text-[clamp(0.875rem,2.5vw,1.125rem)]">
             হাতে বাছাই করা বই যা তোমাকে বেশি জানতে সাহায্য করে এবং জীবনে বেশি দূর যেতে উৎসাহ দেয়।
           </p>
-
-          <div className="pt-2">
-            <h2 className="text-[clamp(1.25rem,3vw,1.875rem)] font-semibold text-gray-800">
-              {featuredBook.title}
-            </h2>
-            <p className="text-gray-500 mt-1 text-[clamp(0.75rem,2vw,0.875rem)]">
-              by {featuredBook.author}
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row flex-wrap gap-4 pt-4 sm:pt-6 justify-center md:justify-start">
-            <button className="px-[clamp(1.25rem,3vw,2rem)] py-[clamp(0.75rem,2vw,1rem)] rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-lg font-medium text-[clamp(0.875rem,2vw,1rem)]">
-              Buy Now • ৳{featuredBook.price}
-            </button>
-
-            <button className="px-[clamp(1.25rem,3vw,2rem)] py-[clamp(0.75rem,2vw,1rem)] rounded-xl border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition font-medium text-[clamp(0.875rem,2vw,1rem)]">
-              Explore All Books
-            </button>
-          </div>
         </motion.div>
 
         {/* RIGHT COVERFLOW SLIDER */}
@@ -141,7 +122,7 @@ export const Hero = () => {
             {books.map((book) => (
               <SwiperSlide
                 key={book._id}
-                className="!w-[clamp(220px,40vw,320px)]"
+                className="!w-[clamp(220px,40vw,360px)]"
               >
                 <div className="relative rounded-[clamp(1rem,3vw,1.5rem)] overflow-hidden shadow-xl sm:shadow-2xl h-full">
                   <Image

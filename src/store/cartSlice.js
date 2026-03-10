@@ -1,5 +1,5 @@
 // store/cartSlice.js
-import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 
 const initialState = {
   items: [],
@@ -12,37 +12,38 @@ const cartSlice = createSlice({
     // FIXED: Updated addToCart to handle quantity from payload
     addToCart: (state, action) => {
       const item = action.payload;
+
+      // Log to verify we're getting the right price
+      console.log("CartSlice adding item:", {
+        title: item.title,
+        price: item.price, // This should now be 280, not 560
+        originalPrice: item.originalPrice,
+        discount: item.discount,
+      });
+
       const existing = state.items.find((i) => i.id === item.id);
 
       if (existing) {
-        // If item already exists, add the new quantity to existing quantity
         existing.quantity += item.quantity || 1;
       } else {
-        // If new item, add it with the specified quantity
-        state.items.push({ 
-          ...item, 
-          quantity: item.quantity || 1 
+        state.items.push({
+          ...item,
+          quantity: item.quantity || 1,
         });
       }
     },
 
     removeFromCart: (state, action) => {
-      state.items = state.items.filter(
-        (item) => item.id !== action.payload
-      );
+      state.items = state.items.filter((item) => item.id !== action.payload);
     },
 
     increaseQty: (state, action) => {
-      const item = state.items.find(
-        (i) => i.id === action.payload
-      );
+      const item = state.items.find((i) => i.id === action.payload);
       if (item) item.quantity += 1;
     },
 
     decreaseQty: (state, action) => {
-      const item = state.items.find(
-        (i) => i.id === action.payload
-      );
+      const item = state.items.find((i) => i.id === action.payload);
       if (item && item.quantity > 1) {
         item.quantity -= 1;
       }
@@ -75,28 +76,26 @@ const cartSlice = createSlice({
 export const selectCartItems = (state) => state.cart.items;
 
 // Memoized selectors using reselect
-export const selectCartCount = createSelector(
-  [selectCartItems],
-  (items) => items.reduce((total, item) => total + item.quantity, 0)
+export const selectCartCount = createSelector([selectCartItems], (items) =>
+  items.reduce((total, item) => total + item.quantity, 0),
 );
 
-export const selectCartTotal = createSelector(
-  [selectCartItems],
-  (items) => items.reduce((total, item) => total + (item.price * item.quantity), 0)
+export const selectCartTotal = createSelector([selectCartItems], (items) =>
+  items.reduce((total, item) => total + item.price * item.quantity, 0),
 );
 
-export const selectCartItemById = (id) => 
-  createSelector(
-    [selectCartItems],
-    (items) => items.find(item => item.id === id)
+export const selectCartItemById = (id) =>
+  createSelector([selectCartItems], (items) =>
+    items.find((item) => item.id === id),
   );
 
 export const selectCartItemsWithDetails = createSelector(
   [selectCartItems],
-  (items) => items.map(item => ({
-    ...item,
-    subtotal: item.price * item.quantity
-  }))
+  (items) =>
+    items.map((item) => ({
+      ...item,
+      subtotal: item.price * item.quantity,
+    })),
 );
 
 export const selectCartSummary = createSelector(
@@ -106,8 +105,8 @@ export const selectCartSummary = createSelector(
     count,
     total,
     itemCount: items.length,
-    isEmpty: items.length === 0
-  })
+    isEmpty: items.length === 0,
+  }),
 );
 
 export const {
