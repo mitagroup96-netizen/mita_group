@@ -3,24 +3,31 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useBooks } from "@/hooks/useBooks";
-
-// Swiper imports
-import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCoverflow, Autoplay } from "swiper/modules";
-
-// Swiper styles
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/autoplay";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import { HeroSkeleton } from "./HeroSkeleton";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const Hero = () => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "center",
+    skipSnaps: false,
+    dragFree: false,
+    containScroll: "trimSnaps",
+  });
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState([]);
+
   const {
     data: monthly,
     isLoading,
     isError,
   } = useBooks({
-    limit: 5,
+    limit: 8,
     bestOfMonth: true,
     sortBy: "rating",
     order: "desc",
@@ -28,133 +35,195 @@ export const Hero = () => {
 
   const books = monthly?.data ?? [];
 
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    setScrollSnaps(emblaApi.scrollSnapList());
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
+
+  // Autoplay
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const autoplay = setInterval(() => {
+      emblaApi.scrollNext();
+    }, 3000);
+
+    return () => clearInterval(autoplay);
+  }, [emblaApi]);
+
   if (isLoading) {
     return <HeroSkeleton />;
   }
 
   if (isError || books.length === 0) {
-    return <p className="text-center py-20">No book of the month yet...</p>;
+    return <p className="text-center py-20 text-[clamp(1rem,2vw,1.2rem)]">No book of the month yet...</p>;
   }
 
-  const featuredBook = books[0];
-
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center bg-white overflow-hidden">
-      {/* Background blobs - reduced size on mobile */}
-      <div className="absolute -top-16 -left-16 sm:-top-24 sm:-left-24 w-64 h-64 sm:w-72 sm:h-72 bg-gradient-to-r from-pink-400 to-indigo-400 rounded-full blur-[100px] sm:blur-[120px] opacity-40" />
-      <div className="absolute top-1/4 sm:top-1/3 -right-16 sm:-right-24 w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-r from-indigo-400 to-cyan-400 rounded-full blur-[110px] sm:blur-[140px] opacity-30" />
-      <div className="absolute -bottom-10 sm:bottom-0 left-1/4 sm:left-1/3 w-56 h-56 sm:w-64 sm:h-64 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-[100px] sm:blur-[120px] opacity-30" />
+    <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-indigo-50 overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-200 rounded-full blur-xl opacity-70 animate-blob" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-200 rounded-full blur-xl opacity-70 animate-blob animation-delay-2000" />
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-purple-200 rounded-full blur-xl opacity-70 animate-blob animation-delay-4000" />
+      </div>
 
-      <div className="relative container mx-auto px-5 sm:px-6 py-12 sm:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-center">
-        {/* LEFT CONTENT */}
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-          className="space-y-5 sm:space-y-6 text-center md:text-left"
-        >
-          <span className="inline-block px-3 sm:px-4 py-1 text-[clamp(0.75rem,2vw,0.875rem)] rounded-full bg-indigo-50 text-indigo-600 font-medium">
-            📘 Best Book of the Month
-          </span>
-
-          <h1 className="text-[clamp(1.875rem,5vw,3.75rem)] font-bold text-gray-900 leading-tight">
-           পড়ো বেশি, জানো বেশি,  <span className="text-indigo-600">যাও বেশি দূর।</span>
-          </h1>
-
-          <p className="text-gray-600 max-w-lg mx-auto md:mx-0 text-[clamp(0.875rem,2.5vw,1.125rem)]">
-            হাতে বাছাই করা বই যা তোমাকে বেশি জানতে সাহায্য করে এবং জীবনে বেশি দূর যেতে উৎসাহ দেয়।
-          </p>
-        </motion.div>
-
-        {/* RIGHT COVERFLOW SLIDER */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          className="relative w-full aspect-[4/5] sm:aspect-[5/4] md:aspect-auto md:h-[500px] lg:h-[580px] max-w-full md:max-w-[820px] mx-auto fade-mask"
-        >
-          <Swiper
-            effect="coverflow"
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView="auto"
-            loop={true}
-            autoplay={{
-              delay: 2500,
-              disableOnInteraction: false,
-            }}
-            coverflowEffect={{
-              rotate: 20, // reduced rotation on mobile
-              stretch: -25,
-              depth: 180, // less depth = better mobile feel
-              modifier: 1.2, // slightly softer perspective
-              slideShadows: false,
-            }}
-            breakpoints={{
-              0: {
-                coverflowEffect: {
-                  rotate: 15,
-                  stretch: -40,
-                  depth: 120,
-                  modifier: 1,
-                },
-              },
-              640: {
-                coverflowEffect: {
-                  rotate: 20,
-                  stretch: -30,
-                  depth: 160,
-                  modifier: 1.2,
-                },
-              },
-              1024: {
-                coverflowEffect: {
-                  rotate: 25,
-                  stretch: -30,
-                  depth: 250,
-                  modifier: 1.5,
-                },
-              },
-            }}
-            modules={[EffectCoverflow, Autoplay]}
-            className="h-[90%] w-full"
+      <div className="relative container mx-auto px-4 sm:px-6 py-12 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          
+          {/* LEFT CONTENT */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            className="space-y-6 lg:space-y-8 text-center lg:text-left"
           >
-            {books.map((book) => (
-              <SwiperSlide
-                key={book._id}
-                className="!w-[clamp(220px,40vw,360px)]"
-              >
-                <div className="relative rounded-[clamp(1rem,3vw,1.5rem)] overflow-hidden shadow-xl sm:shadow-2xl h-full">
-                  <Image
-                    src={book.images?.[0]?.url || "/placeholder-book.jpg"}
-                    alt={book.title}
-                    fill
-                    sizes="(max-width: 640px) 220px, (max-width: 1024px) 280px, 320px"
-                    className="object-cover"
-                    priority={book._id === featuredBook._id}
-                  />
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 font-medium text-[clamp(0.75rem,1vw,0.9rem)] mx-auto lg:mx-0"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+              </span>
+              📚 বেস্ট বুক অফ দ্য মান্থ
+            </motion.div>
 
-                  {/* Info Overlay – moved slightly higher if needed, semi-transparent bg */}
-                  <div className="absolute bottom-[clamp(0.5rem,2vw,1rem)] left-[clamp(0.5rem,2vw,1rem)] right-[clamp(0.5rem,2vw,1rem)] bg-red-50/85 backdrop-blur-md rounded-[clamp(0.5rem,1.5vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)] shadow-md">
-                    <h3 className="font-bold text-gray-900 text-[clamp(0.875rem,2vw,1.125rem)] line-clamp-2">
-                      {book.title}
-                    </h3>
+            {/* Heading */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="font-bold text-gray-900 leading-tight text-[clamp(2rem,4vw,4.5rem)]"
+            >
+              পড়ো বেশি,{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                জানো বেশি,
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-amber-500 to-pink-500 text-transparent bg-clip-text">
+                যাও বেশি দূর।
+              </span>
+            </motion.h1>
 
-                    <p className="text-[clamp(0.75rem,1.5vw,0.875rem)] text-gray-600 mt-0.5">
-                      ★ {book.rating?.toFixed(1)} • ৳{book.price}
-                    </p>
+            {/* Paragraph */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-gray-600 max-w-lg mx-auto lg:mx-0 text-[clamp(0.9rem,1.2vw,1.2rem)]"
+            >
+              হাতে বাছাই করা বই যা তোমাকে বেশি জানতে সাহায্য করে এবং জীবনে বেশি দূর যেতে উৎসাহ দেয়।
+            </motion.p>
+          </motion.div>
 
-                    {book.discount > 0 && (
-                      <span className="text-green-600 font-medium text-[clamp(0.75rem,1.5vw,0.875rem)] block mt-1">
-                        {book.discount}% OFF
-                      </span>
-                    )}
-                  </div>
+          {/* RIGHT CAROUSEL */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="relative w-full"
+          >
+            <div className="relative max-w-[800px] mx-auto">
+              
+              {/* Carousel */}
+              <div className="overflow-hidden rounded-3xl" ref={emblaRef}>
+                <div className="flex">
+                  {books.map((book, index) => (
+                    <div
+                      key={book._id}
+                      className={cn(
+                        "flex-[0_0_70%] sm:flex-[0_0_60%] md:flex-[0_0_50%] lg:flex-[0_0_60%] xl:flex-[0_0_50%] min-w-0 pl-4 transition-opacity duration-300",
+                        index === selectedIndex
+                          ? "opacity-100"
+                          : "opacity-40 hover:opacity-60"
+                      )}
+                    >
+                      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300">
+                        <Image
+                          src={book.images?.[0]?.url || "/placeholder-book.jpg"}
+                          alt={book.title}
+                          fill
+                          sizes="(max-width: 640px) 70vw, (max-width: 1024px) 50vw, 400px"
+                          className="object-cover"
+                          priority={index === 0}
+                        />
+
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                          <h3 className="font-bold line-clamp-1 text-[clamp(0.85rem,1vw,1rem)]">
+                            {book.title}
+                          </h3>
+
+                          <p className="opacity-90 line-clamp-1 text-[clamp(0.75rem,0.9vw,0.9rem)]">
+                            {book.author}
+                          </p>
+
+                          <div className="flex items-center gap-2 mt-1 text-[clamp(0.7rem,0.9vw,0.9rem)]">
+                            <span>★ {book.rating?.toFixed(1)}</span>
+                            <span>•</span>
+                            <span>৳{book.price}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </motion.div>
+              </div>
+
+              {/* Navigation */}
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 lg:-translate-x-1/4 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg rounded-full w-10 h-10 border-0 hidden sm:flex"
+                onClick={scrollPrev}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 lg:translate-x-1/4 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg rounded-full w-10 h-10 border-0 hidden sm:flex"
+                onClick={scrollNext}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+
+              {/* Dots */}
+              <div className="flex justify-center gap-2 mt-8">
+                {scrollSnaps.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => scrollTo(index)}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      index === selectedIndex
+                        ? "w-8 bg-indigo-600"
+                        : "w-2 bg-gray-300 hover:bg-gray-400"
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
