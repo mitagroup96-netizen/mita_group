@@ -38,6 +38,14 @@ export default function AddBook() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   };
 
   // Handle image selection
@@ -50,6 +58,14 @@ export default function AddBook() {
       name: file.name,
     }));
     setPreviewImages((prev) => [...prev, ...previews]);
+    
+    // Clear image error if any
+    if (errors.images) {
+      setErrors((prev) => ({
+        ...prev,
+        images: "",
+      }));
+    }
   };
 
   // Remove image
@@ -97,13 +113,12 @@ export default function AddBook() {
 
     // Append basic fields
     Object.entries(formData).forEach(([key, value]) => {
-  if (typeof value === 'boolean' || typeof value === 'number') {
-    data.append(key, String(value)); // convert to string
-  } else {
-    data.append(key, value);
-  }
-});
-
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        data.append(key, String(value)); // convert to string
+      } else {
+        data.append(key, value);
+      }
+    });
 
     // Append extra fields as JSON
     const extraFields = {
@@ -168,32 +183,46 @@ export default function AddBook() {
             <h2 className="text-lg font-semibold mb-4">Book Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label>Title *</label>
+                <label className="block mb-1">Title <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className={`w-full px-4 py-2 border rounded-lg ${
+                    errors.title ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.title && (
+                  <p className="mt-1 text-sm text-red-500">{errors.title}</p>
+                )}
               </div>
+              
               <div>
-                <label>Author *</label>
+                <label className="block mb-1">Author <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   name="author"
                   value={formData.author}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className={`w-full px-4 py-2 border rounded-lg ${
+                    errors.author ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.author && (
+                  <p className="mt-1 text-sm text-red-500">{errors.author}</p>
+                )}
               </div>
+              
               <div>
-                <label>Category *</label>
+                <label className="block mb-1">Category <span className="text-red-500">*</span></label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className={`w-full px-4 py-2 border rounded-lg ${
+                    errors.category ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 >
                   <option value="">Select category</option>
                   {Array.isArray(categories) &&
@@ -203,29 +232,39 @@ export default function AddBook() {
                       </option>
                     ))}
                 </select>
+                {errors.category && (
+                  <p className="mt-1 text-sm text-red-500">{errors.category}</p>
+                )}
               </div>
+              
               <div>
-                <label>Status</label>
+                <label className="block mb-1">Status</label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 >
                   <option value="active">Active</option>
                   <option value="out_of_stock">Out of Stock</option>
                   <option value="discontinued">Discontinued</option>
                 </select>
               </div>
+              
               <div className="md:col-span-2">
-                <label>Description *</label>
+                <label className="block mb-1">Description <span className="text-red-500">*</span></label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className={`w-full px-4 py-2 border rounded-lg ${
+                    errors.description ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.description && (
+                  <p className="mt-1 text-sm text-red-500">{errors.description}</p>
+                )}
               </div>
             </div>
           </div>
@@ -235,7 +274,7 @@ export default function AddBook() {
             <h2 className="text-lg font-semibold mb-4">Pricing & Stock</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label>Price *</label>
+                <label className="block mb-1">Price <span className="text-red-500">*</span></label>
                 <input
                   type="number"
                   name="price"
@@ -243,22 +282,34 @@ export default function AddBook() {
                   onChange={handleInputChange}
                   min="0"
                   step="0.01"
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className={`w-full px-4 py-2 border rounded-lg ${
+                    errors.price ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.price && (
+                  <p className="mt-1 text-sm text-red-500">{errors.price}</p>
+                )}
               </div>
+              
               <div>
-                <label>Stock *</label>
+                <label className="block mb-1">Stock <span className="text-red-500">*</span></label>
                 <input
                   type="number"
                   name="stock"
                   value={formData.stock}
                   onChange={handleInputChange}
                   min="0"
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className={`w-full px-4 py-2 border rounded-lg ${
+                    errors.stock ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.stock && (
+                  <p className="mt-1 text-sm text-red-500">{errors.stock}</p>
+                )}
               </div>
+              
               <div>
-                <label>Original Price</label>
+                <label className="block mb-1">Original Price</label>
                 <input
                   type="number"
                   name="originalPrice"
@@ -266,11 +317,12 @@ export default function AddBook() {
                   onChange={handleInputChange}
                   min="0"
                   step="0.01"
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
+              
               <div>
-                <label>Discount (%)</label>
+                <label className="block mb-1">Discount (%)</label>
                 <input
                   type="number"
                   name="discount"
@@ -278,11 +330,12 @@ export default function AddBook() {
                   onChange={handleInputChange}
                   min="0"
                   max="100"
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
+              
               <div>
-                <label>Rating</label>
+                <label className="block mb-1">Rating</label>
                 <input
                   type="number"
                   name="rating"
@@ -291,18 +344,19 @@ export default function AddBook() {
                   min="0"
                   max="5"
                   step="0.1"
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
+              
               <div>
-                <label>Total Ratings</label>
+                <label className="block mb-1">Total Ratings</label>
                 <input
                   type="number"
                   name="totalRatings"
                   value={formData.totalRatings}
                   onChange={handleInputChange}
                   min="0"
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
             </div>
@@ -313,34 +367,80 @@ export default function AddBook() {
         <div className="space-y-6">
           {/* Images */}
           <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-lg font-semibold mb-4">Images</h2>
-            <input type="file" multiple accept="image/*" onChange={handleImageChange} className="hidden" id="image-upload" />
-            <label htmlFor="image-upload" className="cursor-pointer block mb-4 p-4 border-2 border-dashed rounded-lg text-center hover:bg-gray-50">
+            <h2 className="text-lg font-semibold mb-4">
+              Images <span className="text-red-500">*</span>
+            </h2>
+            <input 
+              type="file" 
+              multiple 
+              accept="image/*" 
+              onChange={handleImageChange} 
+              className="hidden" 
+              id="image-upload" 
+            />
+            <label 
+              htmlFor="image-upload" 
+              className={`cursor-pointer block mb-4 p-4 border-2 border-dashed rounded-lg text-center hover:bg-gray-50 ${
+                errors.images ? 'border-red-500' : 'border-gray-300'
+              }`}
+            >
               <Upload className="mx-auto mb-2 text-gray-400" size={24} />
               <p className="text-sm text-gray-600">Click to upload images</p>
             </label>
-            {previewImages.map((img, idx) => (
-              <div key={idx} className="relative group">
-                <img src={img.url} alt={img.name} className="w-full h-32 object-cover rounded-lg" />
-                <button type="button" onClick={() => removeImage(idx)} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                  <X size={14} />
-                </button>
-                <div className="mt-1 text-xs text-gray-500">{img.name}</div>
-              </div>
-            ))}
+            
+            {errors.images && (
+              <p className="mb-3 text-sm text-red-500">{errors.images}</p>
+            )}
+            
+            <div className="space-y-3">
+              {previewImages.map((img, idx) => (
+                <div key={idx} className="relative group">
+                  <img src={img.url} alt={img.name} className="w-full h-32 object-cover rounded-lg" />
+                  <button 
+                    type="button" 
+                    onClick={() => removeImage(idx)} 
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={14} />
+                  </button>
+                  <div className="mt-1 text-xs text-gray-500 truncate">{img.name}</div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Settings */}
           <div className="bg-white rounded-xl shadow p-6 space-y-2">
             <h2 className="text-lg font-semibold mb-2">Settings</h2>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange} /> Featured
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                name="featured" 
+                checked={formData.featured} 
+                onChange={handleInputChange} 
+                className="w-4 h-4"
+              /> 
+              <span>Featured</span>
             </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" name="bestseller" checked={formData.bestseller} onChange={handleInputChange} /> Bestseller
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                name="bestseller" 
+                checked={formData.bestseller} 
+                onChange={handleInputChange} 
+                className="w-4 h-4"
+              /> 
+              <span>Bestseller</span>
             </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" name="bestOfMonth" checked={formData.bestOfMonth} onChange={handleInputChange} /> Best of Month
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                name="bestOfMonth" 
+                checked={formData.bestOfMonth} 
+                onChange={handleInputChange} 
+                className="w-4 h-4"
+              /> 
+              <span>Best of Month</span>
             </label>
           </div>
         </div>

@@ -95,7 +95,9 @@ export default function BookDetailsPage({ params }) {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">বইয়ের তথ্য লোড হচ্ছে...</p>
+          <p className="text-gray-600 text-[clamp(0.875rem,2.5vw,1rem)]">
+            বইয়ের তথ্য লোড হচ্ছে...
+          </p>
         </div>
       </div>
     );
@@ -212,7 +214,9 @@ export default function BookDetailsPage({ params }) {
                   <h1 className="text-[clamp(1.5rem,5vw,2rem)] font-bold text-gray-900 mb-2">
                     {book.title}
                   </h1>
-                  <p className="text-gray-600 text-[clamp(1rem,3vw,1.125rem)] mb-4">by {book.author}</p>
+                  <p className="text-gray-600 text-[clamp(1rem,3vw,1.125rem)] mb-4">
+                    by {book.author}
+                  </p>
 
                   {/* Rating */}
                   <div className="flex items-center mb-6 flex-wrap gap-2">
@@ -294,7 +298,9 @@ export default function BookDetailsPage({ params }) {
                         স্টকে আছে ({book.stock} কপি)
                       </div>
                     ) : (
-                      <div className="text-red-600 text-[clamp(0.875rem,2.5vw,1rem)]">স্টকে নেই</div>
+                      <div className="text-red-600 text-[clamp(0.875rem,2.5vw,1rem)]">
+                        স্টকে নেই
+                      </div>
                     )}
                   </div>
 
@@ -346,7 +352,9 @@ export default function BookDetailsPage({ params }) {
                     animate={{ opacity: 1, y: 0 }}
                     className="prose max-w-none"
                   >
-                    <h3 className="text-[clamp(1.125rem,3vw,1.25rem)] font-bold mb-4">বইয়ের বিবরণ</h3>
+                    <h3 className="text-[clamp(1.125rem,3vw,1.25rem)] font-bold mb-4">
+                      বইয়ের বিবরণ
+                    </h3>
                     <p className="text-gray-700 whitespace-pre-line text-[clamp(0.875rem,2.5vw,1rem)]">
                       {book.description ||
                         "এই বইয়ের জন্য কোনো বিবরণ পাওয়া যায়নি।"}
@@ -370,7 +378,9 @@ export default function BookDetailsPage({ params }) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    <h3 className="text-[clamp(1.125rem,3vw,1.25rem)] font-bold mb-6">প্রকাশক তথ্য</h3>
+                    <h3 className="text-[clamp(1.125rem,3vw,1.25rem)] font-bold mb-6">
+                      প্রকাশক তথ্য
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div>
                         <h4 className="text-[clamp(1rem,2.5vw,1.125rem)] font-semibold mb-4">
@@ -411,21 +421,25 @@ export default function BookDetailsPage({ params }) {
                 )}
               </div>
             </div>
-          <div className="mt-[clamp(2rem,5vw,3rem)]">
-            <BookReviews bookId={id} />
-          </div>
+            <div className="mt-[clamp(2rem,5vw,3rem)]">
+              <BookReviews bookId={id} />
+            </div>
           </div>
 
           {/* Right Column - Sidebar */}
           <div className="lg:w-1/3">
             {/* Shipping Info */}
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-              <h3 className="font-bold text-[clamp(1.125rem,3vw,1.25rem)] mb-4">ডেলিভারি তথ্য</h3>
+              <h3 className="font-bold text-[clamp(1.125rem,3vw,1.25rem)] mb-4">
+                ডেলিভারি তথ্য
+              </h3>
               <div className="space-y-4">
                 <div className="flex items-start">
                   <Truck className="w-5 h-5 text-green-600 mr-3 mt-1 shrink-0" />
                   <div>
-                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">ফ্রি ডেলিভারি</div>
+                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">
+                      ফ্রি ডেলিভারি
+                    </div>
                     <div className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">
                       ৫০০+ টাকার অর্ডারে
                     </div>
@@ -434,7 +448,9 @@ export default function BookDetailsPage({ params }) {
                 <div className="flex items-start">
                   <Clock className="w-5 h-5 text-blue-600 mr-3 mt-1 shrink-0" />
                   <div>
-                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">২-৩ কর্মদিবসে</div>
+                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">
+                      ২-৩ কর্মদিবসে
+                    </div>
                     <div className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">
                       ঢাকা সিটিতে ডেলিভারি
                     </div>
@@ -443,7 +459,9 @@ export default function BookDetailsPage({ params }) {
                 <div className="flex items-start">
                   <RefreshCw className="w-5 h-5 text-purple-600 mr-3 mt-1 shrink-0" />
                   <div>
-                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">৭ দিন রিটার্ন</div>
+                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">
+                      ৭ দিন রিটার্ন
+                    </div>
                     <div className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">
                       সমস্যা হলে রিটার্ন করুন
                     </div>
@@ -452,7 +470,9 @@ export default function BookDetailsPage({ params }) {
                 <div className="flex items-start">
                   <Shield className="w-5 h-5 text-orange-600 mr-3 mt-1 shrink-0" />
                   <div>
-                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">১০০% সুরক্ষিত</div>
+                    <div className="font-medium text-[clamp(0.875rem,2.5vw,1rem)]">
+                      ১০০% সুরক্ষিত
+                    </div>
                     <div className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">
                       সুরক্ষিত পেমেন্ট
                     </div>
@@ -463,86 +483,73 @@ export default function BookDetailsPage({ params }) {
 
             {/* Related Books */}
             {relatedBooks.length > 0 && (
-  <div className="bg-white rounded-xl shadow-lg p-6">
-    <h3 className="font-bold text-[clamp(1.125rem,3vw,1.25rem)] mb-4">
-      সম্পর্কিত বই
-    </h3>
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="font-bold text-[clamp(1.125rem,3vw,1.25rem)] mb-4">
+                  সম্পর্কিত বই
+                </h3>
 
-    <div className="space-y-4">
-      {relatedBooks
-        .filter((relatedBook) => relatedBook._id !== book._id) // ✅ Hide same book
-        .slice(0, 4)
-        .map((relatedBook, index) => (
-          <Link
-            key={relatedBook._id || index}
-            href={`/books/${relatedBook._id}`}
-            className="flex items-center p-3 rounded-lg hover:bg-gray-50 group"
-          >
-            <div className="w-16 h-20 rounded overflow-hidden bg-linear-to-br from-blue-100 to-purple-100 shrink-0">
-              {relatedBook.images?.[0]?.url ? (
-                <Image
-                  src={relatedBook.images[0].url}
-                  alt={relatedBook.title}
-                  width={64}
-                  height={80}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-gray-400" />
+                <div className="space-y-4">
+                  {relatedBooks
+                    .filter((relatedBook) => relatedBook._id !== book._id) // ✅ Hide same book
+                    .slice(0, 4)
+                    .map((relatedBook, index) => (
+                      <Link
+                        key={relatedBook._id || index}
+                        href={`/books/${relatedBook._id}`}
+                        className="flex items-center p-3 rounded-lg hover:bg-gray-50 group"
+                      >
+                        <div className="w-16 h-20 rounded overflow-hidden bg-linear-to-br from-blue-100 to-purple-100 shrink-0">
+                          {relatedBook.images?.[0]?.url ? (
+                            <Image
+                              src={relatedBook.images[0].url}
+                              alt={relatedBook.title}
+                              width={64}
+                              height={80}
+                              className="object-cover w-full h-full"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <BookOpen className="w-6 h-6 text-gray-400" />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="ml-4 flex-1 min-w-0">
+                          <h4 className="font-medium text-gray-900 group-hover:text-blue-600 line-clamp-1 text-[clamp(0.875rem,2.5vw,1rem)]">
+                            {relatedBook.title}
+                          </h4>
+
+                          <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">
+                            {relatedBook.author}
+                          </p>
+
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="font-bold text-blue-600 text-[clamp(0.875rem,2.5vw,1rem)]">
+                              {formatPrice(relatedBook.price)}
+                            </span>
+
+                            <div className="flex items-center text-yellow-400">
+                              <Star className="w-3 h-3 fill-current" />
+                              <span className="text-[clamp(0.625rem,1.5vw,0.75rem)] text-gray-600 ml-1">
+                                {relatedBook.rating || 0}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
                 </div>
-              )}
-            </div>
 
-            <div className="ml-4 flex-1 min-w-0">
-              <h4 className="font-medium text-gray-900 group-hover:text-blue-600 line-clamp-1 text-[clamp(0.875rem,2.5vw,1rem)]">
-                {relatedBook.title}
-              </h4>
-
-              <p className="text-[clamp(0.75rem,2vw,0.875rem)] text-gray-600">
-                {relatedBook.author}
-              </p>
-
-              <div className="flex items-center justify-between mt-1">
-                <span className="font-bold text-blue-600 text-[clamp(0.875rem,2.5vw,1rem)]">
-                  {formatPrice(relatedBook.price)}
-                </span>
-
-                <div className="flex items-center text-yellow-400">
-                  <Star className="w-3 h-3 fill-current" />
-                  <span className="text-[clamp(0.625rem,1.5vw,0.75rem)] text-gray-600 ml-1">
-                    {relatedBook.rating || 0}
-                  </span>
-                </div>
+                <Link
+                  href={`/books?category=${book.category}`}
+                  className="block mt-6 text-center py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 text-[clamp(0.875rem,2.5vw,1rem)]"
+                >
+                  আরও দেখুন
+                </Link>
               </div>
-            </div>
-          </Link>
-        ))}
-    </div>
-
-    <Link
-      href={`/books?category=${book.category}`}
-      className="block mt-6 text-center py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 text-[clamp(0.875rem,2.5vw,1rem)]"
-    >
-      আরও দেখুন
-    </Link>
-  </div>
-)}
+            )}
           </div>
         </div>
-      </div>
-
-      {/* Floating Action Buttons - Fixed with clamp */}
-      <div className="fixed bottom-6 right-6 flex flex-col space-y-3 z-50">
-        <button className="p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700">
-          <ShoppingBag className="w-[clamp(1.25rem,3vw,1.5rem)] h-[clamp(1.25rem,3vw,1.5rem)]" />
-        </button>
-        <button className="p-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700">
-          <MessageSquare className="w-[clamp(1.25rem,3vw,1.5rem)] h-[clamp(1.25rem,3vw,1.5rem)]" />
-        </button>
-        <button className="p-3 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700">
-          <Share2 className="w-[clamp(1.25rem,3vw,1.5rem)] h-[clamp(1.25rem,3vw,1.5rem)]" />
-        </button>
       </div>
 
       {/* Add scrollbar hide style */}

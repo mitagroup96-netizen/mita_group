@@ -22,13 +22,15 @@ import {
 } from "lucide-react";
 
 export default function AboutUsPage() {
-  const aboutText = `বাংলাদেশের সর্বপ্রথম ও সর্ববৃহৎ ডিজিটাল বইবাজার হিসেবে আমাদের যাত্রা শুরু হয় ২০১৮ সালে। একটি স্বপ্ন থেকে - স্বপ্ন ছিল এমন একটি প্ল্যাটফর্ম তৈরি করার যেখানে প্রতিটি বইপ্রেমী সহজেই তাদের প্রিয় বই খুঁজে পাবে, পড়বে এবং জ্ঞানের আলো ছড়িয়ে দেবে। 
-
-আমরা বিশ্বাস করি বই মানুষের জীবন বদলে দিতে পারে। একটি ভালো বই একজনের চিন্তাধারা, দৃষ্টিভঙ্গি এবং জীবনকে সম্পূর্ণ রূপে পরিবর্তন করতে পারে। আমাদের লক্ষ্য সারা বাংলাদেশে জ্ঞানের আলো ছড়িয়ে দেয়া এবং প্রতিটি মানুষের হাতে প্রিয় বই পৌঁছে দেয়া। 
-
-শুরুতে আমাদের সংগ্রহে ছিল মাত্র ৫০০ বই এবং একটি ছোট্ট টিম। আজ আমাদের সংগ্রহে আছে ৫০,০০০+ বই, ১০০+ প্রকাশনা সংস্থার সাথে পার্টনারশিপ এবং দেশব্যাপী ৫,০০,০০০+ সন্তুষ্ট গ্রাহক। আমাদের এই যাত্রায় সাথী হয়েছেন দেশের সেরা লেখক, প্রকাশক এবং বিপুল সংখ্যক বইপ্রেমী পাঠক।
-
-আমাদের মিশন হচ্ছে ডিজিটাল বাংলাদেশের প্রতিটি মানুষকে বই পড়ার অভ্যাস গড়ে তোলায় সাহায্য করা। আমরা চাই প্রতিটি ঘরে একটি করে বইয়ের আলমারি হোক, প্রতিটি হাতে একটি করে বই থাকুক।`;
+  const aboutText = `প্রতিযোগিতামূলক এই বিশ্বে আপনার স্বপ্নের ক্যারিয়ার গড়ার পথে বিশ্বস্ত সঙ্গী হতে আমরা নিয়ে এসেছি চাকরি ও ভর্তি পরীক্ষার সেরা সব বইয়ের এক নির্ভরযোগ্য প্ল্যাটফর্ম। মূলত "নিয়োগ পাবলিকেশন্স"-এর জনপ্রিয় 'বেসিক' সিরিজের সকল প্রকার মানসম্মত সহায়ক বই আপনি খুব সহজেই পেয়ে যাবেন আমাদের এই ওয়েবসাইটে।
+আমাদের কাছে যা যা পাবেন:
+- সরকারি ও বেসরকারি চাকরির বই: পুলিশ, বিজিবি, এনএসআই, রেলওয়ে, ফায়ার সার্ভিস, কৃষি, খাদ্য, স্বাস্থ্যসহ বিভিন্ন মন্ত্রণালয় ও অধিদপ্তরের নিয়োগ সহায়িকা।
+-  ব্যাংক জব গাইড: সরকারি, বেসরকারি ব্যাংক এবং ইসলামী ব্যাংকের নিয়োগ পরীক্ষার প্রস্তুতিমূলক বই ও জব সলিউশন।
+-  শিক্ষক নিয়োগ সহায়িকা: বেসরকারি শিক্ষক নিবন্ধন এবং প্রাথমিক সহকারী শিক্ষক নিয়োগ পরীক্ষার এক্সক্লুসিভ গাইড, সাজেশন ও প্রশ্নব্যাংক।
+-  নার্সিং ও প্যারামেডিকেল ভর্তি গাইড: বি.এস.সি ইন নার্সিং, ডিপ্লোমা ইন নার্সিং সায়েন্স, মিডওয়াইফারি এবং MATS ও IHT প্যারামেডিকেল ভর্তি সহায়িকা।
+- অফিস স্টাফ নিয়োগ সহায়িকা: অফিস সহকারী, কম্পিউটার অপারেটর, হিসাবরক্ষক ও ক্যাশিয়ার পদের জন্য স্পেশাল গাইড।
+আমাদের প্রধান লক্ষ্য হলো দেশের যেকোনো প্রান্তে থাকা চাকরিপ্রার্থী ও শিক্ষার্থীদের হাতে সুলভ মূল্যে সঠিক ও মানসম্মত প্রস্তুতির বই পৌঁছে দেওয়া। সঠিক দিকনির্দেশনা এবং সেরা প্রস্তুতির জন্য প্রয়োজনীয় সব উপকরণ নিয়ে আমরা আছি আপনার পাশে।
+আপনার চূড়ান্ত সাফল্যই আমাদের সার্থকতা!`;
 
   const stats = [
     { icon: BookOpen, value: "৫০,০০০+", label: "বইয়ের সংগ্রহ" },
@@ -84,7 +86,7 @@ export default function AboutUsPage() {
               className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              <span className="font-medium">২০১৮ সাল থেকে বইয়ের বিশ্বস্ত সঙ্গী</span>
+              <span className="font-medium">১৯৯৬ সাল থেকে বইয়ের বিশ্বস্ত সঙ্গী</span>
             </motion.div>
 
             <motion.h1
@@ -154,43 +156,6 @@ export default function AboutUsPage() {
             </div>
           </motion.div>
 
-          {/* Mission Vision Section */}
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8"
-            >
-              <div className="flex items-center mb-6">
-                <Target className="w-10 h-10 text-blue-600 mr-3" />
-                <h3 className="text-2xl font-bold text-gray-900">আমাদের মিশন</h3>
-              </div>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                ডিজিটাল বাংলাদেশের প্রতিটি মানুষকে বই পড়ার অভ্যাস গড়ে তোলায় সাহায্য করা। 
-                আমরা চাই প্রতিটি ঘরে একটি করে বইয়ের আলমারি হোক, প্রতিটি হাতে একটি করে বই থাকুক। 
-                জ্ঞানের আলো ছড়িয়ে দিয়ে একটি শিক্ষিত ও উন্নত জাতি গঠনে অবদান রাখাই আমাদের লক্ষ্য।
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8"
-            >
-              <div className="flex items-center mb-6">
-                <Lightbulb className="w-10 h-10 text-green-600 mr-3" />
-                <h3 className="text-2xl font-bold text-gray-900">আমাদের ভিশন</h3>
-              </div>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                ২০৩০ সালের মধ্যে বাংলাদেশের বৃহত্তম ডিজিটাল লাইব্রেরি ও বইয়ের কমিউনিটি তৈরি করা। 
-                আমরা চাই বাংলাদেশের প্রতিটি মানুষ বই পড়ার সুযোগ পাক। দেশের প্রতিটি শিক্ষার্থী, 
-                পেশাজীবী এবং সাধারণ মানুষের হাতে প্রয়োজনীয় বই পৌঁছে দিয়ে জ্ঞানভিত্তিক সমাজ গঠনে ভূমিকা রাখা।
-              </p>
-            </motion.div>
-          </div>
-
           {/* Core Values */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -221,44 +186,6 @@ export default function AboutUsPage() {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
                   <p className="text-gray-600">{value.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Team Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <div className="text-center mb-12">
-              <Users className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">আমাদের নেতৃত্ব টিম</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                অভিজ্ঞতা এবং আবেগের সমন্বয়ে গঠিত আমাদের দক্ষ টিম
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {team.map((member, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all"
-                >
-                  <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-white text-2xl font-bold">
-                      {member.name.charAt(0)}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
-                  <p className="text-blue-600 font-medium mb-2">{member.role}</p>
-                  <p className="text-gray-500 text-sm">অভিজ্ঞতা: {member.experience}</p>
                 </motion.div>
               ))}
             </div>

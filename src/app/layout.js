@@ -6,6 +6,7 @@ import Providers from "./providers";
 import { Suspense } from "react";
 import Script from "next/script";
 import JsonLd from "@/components/seo/JsonLd";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
 
 export const metadata = {
   title: {
@@ -102,6 +103,7 @@ export default function RootLayout({ children }) {
 
           <Suspense fallback={<LoadingScreen />}>
             <main>{children}</main>
+            <WhatsAppButton />
           </Suspense>
 
           <Footer />

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Galada&display=swap');
 
 @import "tailwindcss";
 
@@ -141,6 +142,10 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.logoFont{
+  font-family: 'Galada', cursive;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -177,4 +182,30 @@
 
 .animation-delay-4000 {
   animation-delay: 4s;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(73, 85, 251, 0.163);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(73, 84, 251);
 }

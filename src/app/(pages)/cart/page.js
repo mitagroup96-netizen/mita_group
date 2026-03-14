@@ -31,7 +31,7 @@ const CartPage = () => {
   const [errors, setErrors] = useState({});
   
   // Your WhatsApp number
-  const whatsappNumber = "8801779527744";
+  const whatsappNumber = "8801906884840";
 
   // Format price function
   const formatPrice = (price) => {

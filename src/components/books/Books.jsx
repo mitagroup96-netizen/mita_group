@@ -369,7 +369,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="w-full flex justify-center"
+                className="w-full flex justify-center mt-6 lg:mt-0"
               >
                 <BookCard book={book} />
               </motion.div>

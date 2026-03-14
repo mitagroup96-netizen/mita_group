@@ -19,7 +19,17 @@ export async function POST(req, { params }) {
     }
 
     const body = await req.json();
+
     const { name, rating, comment } = body;
+
+    const ratingNumber = Number(rating);
+
+    if (!name || !ratingNumber || !comment) {
+      return NextResponse.json(
+        { success:false, message:"All fields required" },
+        { status:400 }
+      );
+    }
 
     const book = await Book.findById(id);
 
@@ -32,13 +42,13 @@ export async function POST(req, { params }) {
 
     // create review
     const review = await Review.create({
-      book:id,
+      book: id,
       name,
-      rating,
+      rating: ratingNumber,
       comment
     });
 
-    // recalculate rating
+    // recalc rating
     const reviews = await Review.find({ book:id });
 
     const totalRatings = reviews.length;
@@ -53,27 +63,27 @@ export async function POST(req, { params }) {
 
     return NextResponse.json({
       success:true,
-      message:"Review added",
       data:review
     });
 
   } catch(error) {
 
-    if(error.code === 11000){
-      return NextResponse.json({
-        success:false,
-        message:"You already reviewed this book"
-      },{status:400})
-    }
+    console.error("Review API Error:", error);
 
-    return NextResponse.json({
-      success:false,
-      message:"Server error",
-      error:error.message
-    },{status:500})
+    return NextResponse.json(
+      {
+        success:false,
+        message:"Server error",
+        error:error.message
+      },
+      { status:500 }
+    );
+
   }
 }
-export async function GET(req, { params }) {
+
+
+export async function GET(req,{params}){
 
   try{
 
@@ -94,10 +104,15 @@ export async function GET(req, { params }) {
 
   }catch(error){
 
-    return NextResponse.json({
-      success:false,
-      message:"Failed to get reviews"
-    },{status:500})
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        success:false,
+        message:"Failed to get reviews"
+      },
+      { status:500 }
+    );
 
   }
 }

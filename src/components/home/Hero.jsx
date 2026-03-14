@@ -111,13 +111,9 @@ export const Hero = () => {
               transition={{ delay: 0.3 }}
               className="font-bold text-gray-900 leading-tight text-[clamp(2rem,4vw,4.5rem)]"
             >
-              পড়ো বেশি,{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-                জানো বেশি,
-              </span>
-              <br />
+              স্বপ্নের ক্যরিয়ার গড়তে{" "}
               <span className="bg-gradient-to-r from-amber-500 to-pink-500 text-transparent bg-clip-text">
-                যাও বেশি দূর।
+                বিশ্বস্ত নিয়োগ সহায়িকা
               </span>
             </motion.h1>
 
