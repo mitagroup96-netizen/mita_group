@@ -12,7 +12,7 @@ export default function robots() {
         '/admin/',
       ],
     },
-    sitemap: 'https://mita-group.vercel.app/sitemap.xml',
-    host: 'https://mita-group.vercel.app',
+    sitemap: 'https://niyog-publications.vercel.app/sitemap.xml',
+    host: 'https://niyog-publications.vercel.app',
   };
 }

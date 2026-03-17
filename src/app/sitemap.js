@@ -2,7 +2,7 @@
 import { MetadataRoute } from 'next';
 
 export default async function sitemap() {
-  const baseUrl = 'https://mita-group.vercel.app';
+  const baseUrl = 'https://niyog-publications.vercel.app';
   
   // Static routes
   const staticRoutes = [
